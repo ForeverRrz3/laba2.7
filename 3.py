@@ -1,5 +1,5 @@
 import os
-from PIL import Image, ImageStat
+from PIL import Image, ImageStat, UnidentifiedImageError
 
 
 def get_dir():
@@ -51,10 +51,24 @@ def palette(colors):
     return canvas
 
 
+def load_images(directory):
+    paths, images = [], []
+    for name in sorted(os.listdir(directory)):
+        p = os.path.join(directory, name)
+        try:
+            images.append(Image.open(p))
+            paths.append(p)
+        except (UnidentifiedImageError, OSError):
+            pass
+    return paths, images
+
+
 def main():
     directory = get_dir()
-    paths = sorted(os.path.join(directory, n) for n in os.listdir(directory))
-    images = [Image.open(p) for p in paths]
+    paths, images = load_images(directory)
+    if not images:
+        print("В папке нет изображений")
+        return
 
     total = {}
     for img in images:
