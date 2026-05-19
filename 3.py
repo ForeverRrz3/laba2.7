@@ -4,7 +4,7 @@ from PIL import Image, ImageStat, UnidentifiedImageError
 
 def get_dir():
     while True:
-        path = input("Путь до папки с изображениями бренда: ")
+        path = input("Путь до папки с изображениями: ")
         if os.path.isdir(path):
             return path
         print("Папка не найдена")
