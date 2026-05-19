@@ -35,17 +35,21 @@ def get_image(prompt):
         except FileNotFoundError:
             print("Файл не найден")
         except (UnidentifiedImageError, OSError):
-            print("Это не изображение или файл повреждён")
-
+            print("Это не изображение или повреждённый файл")
 
 def list_images(directory):
     paths = []
     for name in sorted(os.listdir(directory)):
         path = os.path.join(directory, name)
-        if os.path.isfile(path):
+        if not os.path.isfile(path):
+            continue
+        try:
+            with Image.open(path) as im:
+                im.verify()
             paths.append(path)
+        except (UnidentifiedImageError, OSError):
+            continue
     return paths
-
 
 def average_color(img):
     mean = ImageStat.Stat(img.convert("RGB")).mean
